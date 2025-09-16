@@ -1,6 +1,6 @@
 rm(list=ls())
 
-libraries <- c("tidyverse", "haven", "rio")
+libraries <- c("tidyverse", "haven", "rio", "texreg")
 
 installed_libs <- libraries %in% rownames(installed.packages())
 if (any(installed_libs==FALSE)) {
@@ -23,9 +23,26 @@ dtab <- issp_df %>% summarise(
   max = max(incdiff100, na.rm=T))
 View(dtab)
 
-### Linear regression -------------
-issp_reg <- issp_df %>% select(incdiff100, procjust) %>% drop_na()
 
+ctab <- issp_reg %>% group_by(midclass) %>% count()
+ctab <- ctab %>% ungroup %>% mutate(prop = n/sum(n)) ## like "fre"
+## SMALL TABLE WITH COUNT AND PROPORTION  
+
+
+
+### Linear regression -------------
+issp_reg <- issp_df %>% select(incdiff100, procjust, midclass) %>% drop_na()
+unique(issp_reg$midclass) ## midclass dummy variable
+
+# continuous variables only
 reg1 <- lm(incdiff100~procjust, data = issp_reg)  ## Y ~ X, data=dataset
 reg1 ## VEEEERY basic output
 summary(reg1) ### Better output but not as good as stata :(
+screenreg(reg1)
+
+# with dummy X variable
+reg2 <- lm(incdiff100~midclass, data = issp_reg)
+summary(reg2)
+screenreg(reg2)
+
+
