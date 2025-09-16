@@ -1,0 +1,34 @@
+---
+title: "notes"
+format: html
+editor: visual
+---
+
+## notes
+
+workshop based on Larsen (2016) -> inequality acceptance driven by 
+  - subjective mobility
+  - observation of fair treatment
+  - observation (?) of middle-class society
+
+Testing step-by-step of three hypotheses
+
+### hypothesis vs research question
+
+RQ: do extracurriculars influence school performance?
+HP: When someone takes part in an extracurricolar, then they have higher notes
+VARS: Y = Grades (metric), X = extracurricolars participation (Categorical Yes/No)
+
+Methods choice dependes on WHAT I want to explain and with what i do that
+strictly speaking LINEAR regression requires a METRIC (continuous) Y
+In practice is used also for ordinal categorical variables.
+With nominal Y we use Logit/Mlogit 
+
+
+(Ctrl+Alt+i for new code block)
+```{r}
+## R code
+```
+
+
+The `echo: false` option disables the printing of code (only output is displayed).
