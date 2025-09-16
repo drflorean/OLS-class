@@ -1,6 +1,6 @@
 rm(list=ls())
 
-libraries <- c("tidyverse", "haven", "rio", "texreg")
+libraries <- c("tidyverse", "haven", "rio", "texreg", "labelled")
 
 installed_libs <- libraries %in% rownames(installed.packages())
 if (any(installed_libs==FALSE)) {
@@ -31,7 +31,7 @@ ctab <- ctab %>% ungroup %>% mutate(prop = n/sum(n)) ## like "fre"
 
 
 ### Linear regression -------------
-issp_reg <- issp_df %>% select(incdiff100, procjust, midclass) %>% drop_na()
+issp_reg <- issp_df %>% select(incdiff100, procjust, midclass, female) %>% drop_na()
 unique(issp_reg$midclass) ## midclass dummy variable
 
 # continuous variables only
@@ -45,4 +45,21 @@ reg2 <- lm(incdiff100~midclass, data = issp_reg)
 summary(reg2)
 screenreg(reg2)
 
+reg3 <- lm(incdiff100~female, data = issp_reg)
+screenreg(reg3)
 
+### with categorical variables
+issp_reg <- issp_df %>% select(incdiff100, procjust, midclass, female, educ3, mobility3) %>% drop_na()
+class(issp_reg$educ3)
+unique(issp_reg$educ3)
+
+## R can deal with categorical variables by itself when they are declared as factor
+issp_reg <- issp_reg %>% mutate(mobil3f = labelled::to_factor(mobility3)) 
+issp_reg %>% group_by(mobil3f) %>% count() %>% ungroup %>% mutate(prop = n/sum(n)) ## like "fre"
+
+reg4 <- lm(incdiff100 ~ mobil3f, data = issp_reg)
+
+## relevel() changes the reference category of the factor
+issp_reg <- issp_reg %>% mutate(mobilfactor = relevel(issp_reg$mobil3f, "Immobil"))
+reg4 <- lm(incdiff100~mobilfactor, data = issp_reg)
+screenreg(reg4)
